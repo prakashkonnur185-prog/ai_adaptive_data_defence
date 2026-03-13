@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureBank — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/umd/index.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy-900:#0a1628; --navy-700:#162d5e; --navy-600:#1a3a7a;
+      --navy-500:#1e4799; --navy-400:#2557c7;
+      --slate-100:#f0f4f8; --slate-200:#e2e9f0; --slate-300:#c8d5e3;
+      --slate-400:#94a8be; --slate-500:#5e7a96;
+      --gold-400:#f0b429; --gold-500:#e09c10;
+      --green-400:#22c55e; --red-400:#ef4444; --red-100:#fee2e2;
+      --white:#ffffff;
+    }
+    body {
+      font-family:'DM Sans',sans-serif;
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(145deg,var(--navy-900) 0%,var(--navy-700) 60%,var(--navy-600) 100%);
+      position:relative; overflow:hidden; padding:24px;
+      -webkit-font-smoothing:antialiased;
+    }
+    .bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .s  { position:absolute; border-radius:50%; }
+    .s1 { width:520px;height:520px; background:radial-gradient(circle,var(--gold-400),transparent 70%); top:-180px;right:-100px; opacity:.07; animation:pulse 8s ease-in-out infinite alternate; }
+    .s2 { width:340px;height:340px; background:radial-gradient(circle,#60a5fa,transparent 70%); bottom:-80px;left:-80px; opacity:.07; animation:pulse 10s ease-in-out infinite alternate-reverse; }
+    .s3 { width:200px;height:200px; background:radial-gradient(circle,var(--navy-400),transparent 70%); top:40%;left:8%; opacity:.12; animation:pulse 6s ease-in-out infinite alternate; }
+    @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.18)} }
+    @keyframes slideUp { from{transform:translateY(32px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .wrap { width:100%; max-width:460px; position:relative; z-index:2; animation:slideUp .6s cubic-bezier(.34,1.56,.64,1); }
+
+    .brand { display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px; }
+    .brand-icon { width:48px;height:48px; background:linear-gradient(135deg,var(--gold-400),var(--gold-500)); border-radius:14px; display:flex;align-items:center;justify-content:center; font-size:1.5rem;color:var(--navy-900); box-shadow:0 4px 18px rgba(240,180,41,.45); }
+    .brand-name { font-family:'DM Serif Display',serif; font-size:1.9rem;color:var(--white); }
+
+    .card { background:var(--white); border-radius:24px; padding:36px 34px; box-shadow:0 32px 80px rgba(0,0,0,.42); }
+    .card-hdr { margin-bottom:24px; }
+    .card-hdr h1 { font-family:'DM Serif Display',serif; font-size:1.9rem; color:var(--navy-900); margin-bottom:4px; }
+    .card-hdr p  { color:var(--slate-500); font-size:.9rem; }
+
+    .error-box { background:var(--red-100); border-left:4px solid var(--red-400); color:#991b1b; padding:11px 14px; border-radius:10px; margin-bottom:18px; font-size:.87rem; display:flex;align-items:center;gap:8px; }
+
+    .section-label { font-size:.72rem; font-weight:700; color:var(--slate-400); text-transform:uppercase; letter-spacing:.07em; margin-bottom:10px; margin-top:4px; display:flex;align-items:center;gap:7px; }
+    .section-label::after { content:''; flex:1; height:1px; background:var(--slate-200); }
+
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:.83rem; font-weight:600; color:var(--navy-700); margin-bottom:7px; }
+    .input-wrap { position:relative; display:flex; align-items:center; }
+    .iico { position:absolute;left:13px; font-size:1.05rem; color:var(--slate-400); pointer-events:none; transition:color .2s; }
+    .input-wrap:focus-within .iico { color:var(--navy-500); }
+    .input-wrap input,
+    .input-wrap select {
+      width:100%; padding:11px 13px 11px 40px;
+      border:2px solid var(--slate-200); border-radius:10px;
+      font-size:.93rem; font-family:'DM Sans',sans-serif;
+      color:var(--navy-900); background:var(--white); transition:all .22s;
+    }
+    .input-wrap input:focus,
+    .input-wrap select:focus { outline:none; border-color:var(--navy-500); box-shadow:0 0 0 4px rgba(30,71,153,.1); }
+    .input-wrap input::placeholder { color:var(--slate-300); }
+    .input-wrap select {
+      appearance:none; cursor:pointer;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a8be' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 13px center; padding-right:36px;
+    }
+    .toggle-pw { position:absolute;right:11px; background:none;border:none; color:var(--slate-400);font-size:1.05rem;cursor:pointer;padding:4px;border-radius:4px;transition:color .2s; }
+    .toggle-pw:hover { color:var(--navy-600); }
+
+    .form-row { display:flex;justify-content:space-between;align-items:center;margin-bottom:20px; }
+    .remember { display:flex;align-items:center;gap:7px;font-size:.85rem;color:var(--slate-500);cursor:pointer; }
+    .remember input { accent-color:var(--navy-500);width:14px;height:14px; }
+    .forgot { font-size:.85rem;font-weight:600;color:var(--navy-500);text-decoration:none; }
+    .forgot:hover { color:var(--navy-700); }
+
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+    .btn-login {
+      width:100%; padding:13px; margin-top:20px;
+      background:linear-gradient(135deg,var(--navy-500),var(--navy-700));
+      color:var(--white); border:none; border-radius:10px;
+      font-size:.98rem; font-weight:700; font-family:'DM Sans',sans-serif;
+      cursor:pointer; display:flex;align-items:center;justify-content:center;gap:8px;
+      position:relative; overflow:hidden; transition:all .22s;
+    }
+    .btn-login::before { content:'';position:absolute;inset:0; background:linear-gradient(135deg,rgba(255,255,255,.14),transparent); opacity:0;transition:opacity .22s; }
+    .btn-login:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,71,153,.45); }
+    .btn-login:hover::before { opacity:1; }
+    .btn-login:active { transform:translateY(0); }
+
+    .sec-msg { display:flex;align-items:center;justify-content:center;gap:7px; margin-top:20px;padding-top:18px; border-top:1px solid var(--slate-200); font-size:.77rem;color:var(--slate-400); }
+    .sec-msg i { color:var(--green-400);font-size:1rem; }
+
+    .demo-box { margin-top:16px;padding:14px 16px; background:var(--slate-100); border-radius:12px; border:2px dashed var(--slate-300); }
+    .demo-box h4 { font-size:.76rem;font-weight:700;color:var(--navy-700);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px; }
+    .demo-cred { font-size:.8rem;color:var(--slate-500); }
+    .demo-cred strong { color:var(--navy-600);font-family:'Courier New',monospace;background:var(--slate-200);padding:1px 6px;border-radius:4px; }
+
+    .footer { text-align:center;margin-top:22px;font-size:.76rem;color:rgba(255,255,255,.35); }
+    .footer a { color:rgba(255,255,255,.55);text-decoration:none; }
+    .footer a:hover { color:var(--white); }
+
+    /* Honeypot — completely invisible */
+    #trap_field { position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none; }
+
+    @media(max-width:480px) {
+      .card { padding:26px 18px; }
+      .two-col { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"><div class="s s1"></div><div class="s s2"></div><div class="s s3"></div></div>
+
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-icon"><i class="ph-fill ph-vault"></i></div>
+      <span class="brand-name">SecureBank</span>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">
+        <h1>Welcome back</h1>
+        <p>Sign in to your account securely</p>
+      </div>
+
+      {% if error %}
+      <div class="error-box">
+        <i class="ph-fill ph-warning-circle"></i>
+        <span>{{ error }}</span>
+      </div>
+      {% endif %}
+
+      <form method="POST" action="/login">
+        <!-- Honeypot: invisible to humans, flags bots -->
+        <input type="text" name="trap_field" id="trap_field" tabindex="-1" autocomplete="off" />
+
+        <div class="form-group">
+          <label for="customer_id">Customer ID</label>
+          <div class="input-wrap">
+            <i class="ph ph-identification-card iico"></i>
+            <input type="text" id="customer_id" name="customer_id" placeholder="e.g. customer001" autocomplete="username" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <i class="ph ph-lock iico"></i>
+            <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required />
+            <button type="button" class="toggle-pw" onclick="togglePw()"><i class="ph ph-eye" id="eye-icon"></i></button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="remember"><input type="checkbox" /> Remember me</label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <!-- Location & Time — visible to user as normal login context fields,
+             risk scoring happens silently in the backend only -->
+        <div class="section-label"><i class="ph ph-map-pin"></i> Login Context</div>
+
+        <div class="two-col">
+          <div class="form-group" style="margin-bottom:0">
+            <label for="country">Your Location</label>
+            <div class="input-wrap">
+              <i class="ph ph-globe iico"></i>
+              <select name="country" id="country-select">
+                {% for name, info in countries.items() %}
+                <option value="{{ name }}"
+                  {% if name == "India" %}selected{% endif %}>
+                  {{ info.flag }} {{ name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0">
+            <label for="login_hour">Login Time</label>
+            <div class="input-wrap">
+              <i class="ph ph-clock iico"></i>
+              <select name="login_hour" id="time-select">
+                {% for slot in time_slots %}
+                <option value="{{ slot.hour }}"
+                  {% if slot.hour == 9 %}selected{% endif %}>
+                  {{ slot.label }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <i class="ph ph-sign-in"></i> Sign In Securely
+        </button>
+      </form>
+
+      <div class="sec-msg">
+        <i class="ph-fill ph-shield-check"></i>
+        <span>Your security is our priority — 256-bit encryption</span>
+      </div>
+
+      <div class="demo-box">
+        <h4>🧪 Demo Credentials</h4>
+        <div class="demo-cred">
+          ID: <strong>customer001</strong> &nbsp; Password: <strong>SecurePass123!</strong>
+        </div>
+      </div>
+    </div>
+
+    <p class="footer">© 2025 SecureBank · All rights reserved &nbsp;·&nbsp; <a href="#">Privacy Policy</a></p>
+  </div>
+
+  <script>
+    function togglePw() {
+      const inp = document.getElementById('password');
+      const ico = document.getElementById('eye-icon');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      ico.className = inp.type === 'password' ? 'ph ph-eye' : 'ph ph-eye-slash';
+    }
+  </script>
+</body>
+</html>

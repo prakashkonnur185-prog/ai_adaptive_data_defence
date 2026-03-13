@@ -1,0 +1,13 @@
+{
+  "features": [
+    "login_attempts",
+    "request_rate",
+    "ip_changed",
+    "device_changed",
+    "transaction_amount",
+    "session_duration",
+    "hour_of_day",
+    "day_of_week"
+  ],
+  "contamination": 0.047619047619047616
+}

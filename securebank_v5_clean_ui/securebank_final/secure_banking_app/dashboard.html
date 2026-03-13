@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .account-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .account-header {
+            margin-bottom: 15px;
+        }
+
+        .balance-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .balance-item {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            flex: 1;
+        }
+
+        .balance-amount {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .transactions-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .credit {
+            color: green;
+        }
+
+        .debit {
+            color: red;
+        }
+
+        .no-transactions {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="header-content">
+
+            <div class="logo">🏦 SecureBank</div>
+
+            <div>
+                Welcome, {{ account.customer_name }}
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <div class="account-card">
+
+            <div class="account-header">
+                <h2>{{ account.account_type }} Account</h2>
+                <p>Account: {{ account.account_number }}</p>
+            </div>
+
+            <div class="balance-info">
+
+                <div class="balance-item">
+                    <p>Current Balance</p>
+                    <div class="balance-amount">
+                        ${{ "%.2f"|format(account.balance) }}
+                    </div>
+                </div>
+
+                <div class="balance-item">
+                    <p>Available Balance</p>
+                    <div class="balance-amount">
+                        ${{ "%.2f"|format(account.available_balance) }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="transactions-card">
+
+            <h2>Recent Transactions</h2>
+
+            {% if transactions %}
+
+            {% for transaction in transactions %}
+
+            <div class="transaction-item">
+
+                <div>
+                    <strong>{{ transaction.description }}</strong><br>
+                    <small>{{ transaction.date }} • {{ transaction.type }} • {{ transaction.status }}</small>
+                </div>
+
+                <div class="{% if transaction.amount > 0 %}credit{% else %}debit{% endif %}">
+                    {% if transaction.amount > 0 %}+{% endif %}
+                    ${{ "%.2f"|format(transaction.amount|abs) }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+            {% else %}
+
+            <div class="no-transactions">
+                No recent transactions found
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
